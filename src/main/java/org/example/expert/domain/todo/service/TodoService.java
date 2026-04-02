@@ -82,6 +82,13 @@ public class TodoService {
         ));
     }
 
+
+    // 이걸 queryDSL로 만들어야함
+    // QueryDSL만드는 법
+    // 1. 커스텀 레포지토리를 만든다
+    // 2. 구현체를 만든다 <- 이거 만들려면 config까지 추가시켜야함. bean 등록해야함. 따로 클래스가 없는거 같으니 하나 만들어주지 뭐,...
+    // 3. 커스텀 레포지토리를 도메인 레포지토리에 상속시킨다.
+
     public TodoResponse getTodo(long todoId) {
         Todo todo = todoRepository.findByIdWithUser(todoId)
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
