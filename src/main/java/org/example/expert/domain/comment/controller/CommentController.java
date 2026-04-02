@@ -28,6 +28,9 @@ public class CommentController {
         return ResponseEntity.ok(commentService.saveComment(authUser, todoId, commentSaveRequest));
     }
 
+    // 로그 분석 : 댓글조회시 마다 사용자 정보를 달라고함 ㄷㄷ
+    // entity와 레포 점검 ㄱㄱ~~
+
     @GetMapping("/todos/{todoId}/comments")
     public ResponseEntity<List<CommentResponse>> getComments(@PathVariable long todoId) {
         return ResponseEntity.ok(commentService.getComments(todoId));
