@@ -51,23 +51,25 @@ public class TodoService {
         );
     }
 
-    // 파라미터랑 조건문 추가해주기(일단 내가 많이했던거 써보기~)
+    // 1. 파라미터랑 조건문 추가해주기(일단 내가 많이했던거 써보기~)
+    // 2, 단일 JPQL 만들기
     public Page<TodoResponse> getTodos(String weather, LocalDateTime start, LocalDateTime end, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        // todos 변수 설정하는데 빈 페이지로 초기화 해주기 -> 로직을 다 태우지 못하면 초기화 할 수 있도록..
-        Page<TodoResponse> todos = Page.empty();
+        // 2, 단일 JPQL 만들기
+        Page<Todo> todos = todoRepository.findByCondition(weather, start, end, pageable);
 
-        if(weather != null && start !=null) {
-            todos = todoRepository.findAllByWeatherAndDate(weather, start, end, pageable);
-        } else if (weather != null) {
-            todos = todoRepository.findAllByWeather(weather, pageable);
-        } else if (start != null && end != null) {
-            todos = todoRepository.findAllByModifiedAtBetween(start, end, pageable);
-        } else {
-            todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);  // 조건없이 검색했을 때 -> 기존 코드를 if문 최종으로 넘기기
-        }
 
+        // 1. 파라미터랑 조건문 추가해주기(일단 내가 많이했던거 써보기~)
+//        if(weather != null && start !=null) {
+//            todos = todoRepository.findAllByWeatherAndDate(weather, start, end, pageable);
+//        } else if (weather != null) {
+//            todos = todoRepository.findAllByWeather(weather, pageable);
+//        } else if (start != null && end != null) {
+//            todos = todoRepository.findAllByModifiedAtBetween(start, end, pageable);
+//        } else {
+//            todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);  // 조건없이 검색했을 때 -> 기존 코드를 if문 최종으로 넘기기
+//        }
 
         return todos.map(todo -> new TodoResponse(
                 todo.getId(),
