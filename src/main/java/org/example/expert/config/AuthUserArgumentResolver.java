@@ -12,6 +12,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+
+// springSecurity를 쓰기때문에 필요 없을거얌
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override

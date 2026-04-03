@@ -14,6 +14,9 @@ import org.example.expert.domain.user.enums.UserRole;
 
 import java.io.IOException;
 
+
+//WebSecurityConfig로 통합
+//이 클래스는 현시간부로 파기한다 아쎄이!
 @Slf4j
 @RequiredArgsConstructor
 public class JwtFilter implements Filter {
