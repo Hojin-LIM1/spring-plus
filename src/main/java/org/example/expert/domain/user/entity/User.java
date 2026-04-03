@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.entity.Timestamped;
-import org.example.expert.domain.user.enums.UserRole;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 
 @Getter
 @Entity
@@ -19,18 +21,18 @@ public class User extends Timestamped {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private Collection<? extends GrantedAuthority> userRole;
     @Column(unique = true)
     private String nickname;
 
-    public User(String email, String password, UserRole userRole, String nickname) {
+    public User(String email, String password, Collection<? extends GrantedAuthority> userRole, String nickname) {
         this.email = email;
         this.password = password;
         this.userRole = userRole;
         this.nickname = nickname;
     }
 
-    private User(Long id, String email, UserRole userRole, String nickname) {
+    private User(Long id, String email, Collection<? extends GrantedAuthority> userRole, String nickname) {
         this.id = id;
         this.email = email;
         this.userRole = userRole;
@@ -38,14 +40,14 @@ public class User extends Timestamped {
     }
 
     public static User fromAuthUser(AuthUser authUser) {
-        return new User(authUser.getId(), authUser.getEmail(), authUser.getUserRole(), authUser.getNickname());
+        return new User(authUser.getId(), authUser.getEmail(), authUser.getAuthorities(), authUser.getNickname());
     }
 
     public void changePassword(String password) {
         this.password = password;
     }
 
-    public void updateRole(UserRole userRole) {
+    public void updateRole(Collection<? extends GrantedAuthority> userRole) {
         this.userRole = userRole;
     }
 }
