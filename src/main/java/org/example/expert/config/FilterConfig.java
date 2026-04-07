@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class FilterConfig {
 
+
+    //WebSecurityConfig로 통합
     private final JwtUtil jwtUtil;
 
     @Bean

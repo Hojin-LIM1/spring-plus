@@ -12,6 +12,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+
+// springSecurity를 쓰기때문에 필요 없을거얌
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
@@ -36,11 +38,12 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     ) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-        // JwtFilter 에서 set 한 userId, email, userRole 값을 가져옴
+        // JwtFilter 에서 set 한 userId, email, userRole 값을 가져옴 + 닉네임
         Long userId = (Long) request.getAttribute("userId");
         String email = (String) request.getAttribute("email");
         UserRole userRole = UserRole.of((String) request.getAttribute("userRole"));
+        String nickname = (String) request.getAttribute("nickname");
 
-        return new AuthUser(userId, email, userRole);
+        return new AuthUser(userId, email, userRole, nickname);
     }
 }

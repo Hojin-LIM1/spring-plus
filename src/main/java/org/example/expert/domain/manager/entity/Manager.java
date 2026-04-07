@@ -24,6 +24,6 @@ public class Manager {
 
     public Manager(User user, Todo todo) {
         this.user = user;
-        this.todo = todo;
+        this.todo = todo;   //check~
     }
 }

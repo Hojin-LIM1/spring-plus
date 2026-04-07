@@ -5,8 +5,10 @@ import org.example.expert.client.WeatherClient;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.dto.request.TodoSaveRequest;
+import org.example.expert.domain.todo.dto.request.TodoSearchRequest;
 import org.example.expert.domain.todo.dto.response.TodoResponse;
 import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
+import org.example.expert.domain.todo.dto.response.TodoSearchResponse;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponse;
@@ -17,14 +19,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(readOnly = true)  // <- 클래스 전체가 읽기 전용으로 되어 있어서 saveTodo에 @Transactional만 추가하면 되겠군
 public class TodoService {
 
     private final TodoRepository todoRepository;
     private final WeatherClient weatherClient;
 
+
+    @Transactional  // <- 추가
     public TodoSaveResponse saveTodo(AuthUser authUser, TodoSaveRequest todoSaveRequest) {
         User user = User.fromAuthUser(authUser);
 
@@ -47,10 +53,25 @@ public class TodoService {
         );
     }
 
-    public Page<TodoResponse> getTodos(int page, int size) {
+    // 1. 파라미터랑 조건문 추가해주기(일단 내가 많이했던거 써보기~)
+    // 2, 단일 JPQL 만들기
+    public Page<TodoResponse> getTodos(String weather, LocalDateTime start, LocalDateTime end, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        Page<Todo> todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);
+        // 2, 단일 JPQL 만들기
+        Page<Todo> todos = todoRepository.findByCondition(weather, start, end, pageable);
+
+
+        // 1. 파라미터랑 조건문 추가해주기(일단 내가 많이했던거 써보기~)
+//        if(weather != null && start !=null) {
+//            todos = todoRepository.findAllByWeatherAndDate(weather, start, end, pageable);
+//        } else if (weather != null) {
+//            todos = todoRepository.findAllByWeather(weather, pageable);
+//        } else if (start != null && end != null) {
+//            todos = todoRepository.findAllByModifiedAtBetween(start, end, pageable);
+//        } else {
+//            todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);  // 조건없이 검색했을 때 -> 기존 코드를 if문 최종으로 넘기기
+//        }
 
         return todos.map(todo -> new TodoResponse(
                 todo.getId(),
@@ -62,6 +83,13 @@ public class TodoService {
                 todo.getModifiedAt()
         ));
     }
+
+
+    // 이걸 queryDSL로 만들어야함
+    // QueryDSL만드는 법
+    // 1. 커스텀 레포지토리를 만든다
+    // 2. 구현체를 만든다 <- 이거 만들려면 config까지 추가시켜야함. bean 등록해야함. 따로 클래스가 없는거 같으니 하나 만들어주지 뭐,...
+    // 3. 커스텀 레포지토리를 도메인 레포지토리에 상속시킨다.
 
     public TodoResponse getTodo(long todoId) {
         Todo todo = todoRepository.findByIdWithUser(todoId)
@@ -79,4 +107,11 @@ public class TodoService {
                 todo.getModifiedAt()
         );
     }
+
+    // 동적 쿼리 검색 메서드 만들기
+    public Page<TodoSearchResponse> searchTodos(TodoSearchRequest request, Pageable pageable) {
+        return todoRepository.searchTodos(request, pageable);
+    }
+
+
 }

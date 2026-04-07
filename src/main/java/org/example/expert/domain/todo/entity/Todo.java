@@ -30,7 +30,11 @@ public class Todo extends Timestamped {
     @OneToMany(mappedBy = "todo", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "todo")
+
+    // ALL을 쓰면 담당자 정보 전부 타노스 당함
+    // PERSIST 담당자 정보는 남아 있음.
+    // 이력 관리를 하는게 이득이라면 PERSIST가 낫지 않을까? <- 추후 db분석에 쓰일 수도 있으니..
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.PERSIST)
     private List<Manager> managers = new ArrayList<>();
 
     public Todo(String title, String contents, String weather, User user) {
