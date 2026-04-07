@@ -34,7 +34,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 미사용
                 //3. - 가,나,다
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // 회원가입, 로그인 허용
+                        .requestMatchers("/auth/**", "/health").permitAll() // 회원가입, 로그인 허용
                         .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자 권한 체크
                         .anyRequest().authenticated()
                 )

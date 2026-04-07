@@ -27,4 +27,9 @@ public class UserController {
         AuthUser authUser = new AuthUser((userDetails.getUserId()), userDetails.getEmail(), userDetails.getUserRole(), userDetails.getNickname());
         userService.changePassword(authUser.getId(), userChangePasswordRequest);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<UserResponse> searchUser(@RequestParam String nickname) {
+        return ResponseEntity.ok(userService.findUserByNickname(nickname));
+    }
 }
