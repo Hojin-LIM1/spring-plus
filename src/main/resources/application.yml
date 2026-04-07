@@ -34,8 +34,8 @@ logging:
 cloud:
   aws:
     credentials:
-      access-key: AKIA5ZSRYWN34AQBKVTH
-      secret-key: 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
+      access-key: { }
+      secret-key: {}
     s3:
       bucket: hojin-profile-bucket
     region:
